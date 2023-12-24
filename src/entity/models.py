@@ -1,6 +1,6 @@
-from sqlalchemy import String, Date, Column, Integer
+from sqlalchemy import String, Date, Column, Integer, ForeignKey
 
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, relationship
 
 
 class Base(DeclarativeBase):
@@ -16,4 +16,16 @@ class Contact(Base):
     phone = Column(String(17))
     birthday = Column(Date)
     other = Column(String)
+
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    user = relationship("User", backref="contacts", lazy="joined")
+
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    username = Column(String(50), index=True)
+    email = Column(String(150), index=True, unique=True)
+    password = Column(String(255), nullable=False)
+    refresh_token = Column(String(250), nullable=True)
 
